@@ -114,13 +114,18 @@ if (($handle = fopen(DATAFILE, "r")) !== FALSE) {
             $rows++;
         } else if (CHAPTER == (int) $col[3]) { 
             for ($c = 0; $c < $num; $c++) {
-                $data_row[] = $col[$c];
+              if (($c == 1) || ($c == 2)) {
+                  $data_row[] = htmlentities($col[$c], ENT_QUOTES, "UTF-8");
+              } else {
+                  $data_row[] = (!empty($col[$c]))? $col[$c]: " ";
+              }
             }
             $data_array[] = $data_row;
             $rows++;
         }
     }
     fclose($handle);
+    $rows--;
     echo "\n  ## {$rows} rows: Closed CSV\n";
 }
 
@@ -176,7 +181,7 @@ $table_def_sql = "CREATE TABLE `".DATATABLE."` (
   `{$data_array[0][20]}` varchar(100) NOT NULL,
   `{$data_array[0][21]}` varchar(30) NOT NULL,
   `{$data_array[0][22]}` varchar(3) NOT NULL,
-  `{$data_array[0][23]}` varchar(255) NOT NULL
+  `{$data_array[0][23]}` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 if (!$result = $mysqli->query($table_def_sql)) {
@@ -186,18 +191,18 @@ if (!$result = $mysqli->query($table_def_sql)) {
 
 // Populate the table.
 $insert_errors = 0;
-for ($r = 1; $r < $rows; $r++) {
+for ($r = 1; $r <= $rows; $r++) {
     $insert_sql  = "INSERT INTO `".DATATABLE."` ";
     $insert_sql .= "(`{$data_array[0][0]}`, `{$data_array[0][1]}`, `{$data_array[0][2]}`, `{$data_array[0][3]}`, `{$data_array[0][4]}`, `{$data_array[0][5]}`, `{$data_array[0][6]}`, `{$data_array[0][7]}`, `{$data_array[0][8]}`, `{$data_array[0][9]}`, `{$data_array[0][10]}`, `{$data_array[0][11]}`, `{$data_array[0][12]}`, `{$data_array[0][13]}`, `{$data_array[0][14]}`, `{$data_array[0][15]}`, `{$data_array[0][16]}`, `{$data_array[0][17]}`, `{$data_array[0][18]}`, `{$data_array[0][19]}`, `{$data_array[0][20]}`, `{$data_array[0][21]}`, `{$data_array[0][22]}`, `{$data_array[0][23]}`)";
     $insert_sql .= " VALUES ";
     $insert_sql .= "('{$data_array[$r][0]}', '{$data_array[$r][1]}', '{$data_array[$r][2]}', '{$data_array[$r][3]}', '{$data_array[$r][4]}', '{$data_array[$r][5]}', '{$data_array[$r][6]}', '{$data_array[$r][7]}', '{$data_array[$r][8]}', '{$data_array[$r][9]}', '{$data_array[$r][10]}', '{$data_array[$r][11]}', '{$data_array[$r][12]}', '{$data_array[$r][13]}', '{$data_array[$r][14]}', '{$data_array[$r][15]}', '{$data_array[$r][16]}', '{$data_array[$r][17]}', '{$data_array[$r][18]}', '{$data_array[$r][19]}', '{$data_array[$r][20]}', '{$data_array[$r][21]}', '{$data_array[$r][22]}', '{$data_array[$r][23]}')";
 
     if (!$result = $mysqli->query($insert_sql)) {
-        echo "    !!!!! Insert error occurred for {$data_array[$r][0]}.\n";
+        echo "    !!!!! Insert error occurred for #{$data_array[$r][0]}.\n";
         $insert_errors++;
     }
 }
 
 $mysqli->close();
-echo "\n  ## {$insert_errors} insert errors: Script ended.\n";
+echo "\n  ## {$insert_errors} insert errors: {$rows} rows inserted and Script finished.\n";
 /* End of file ingest.php */
