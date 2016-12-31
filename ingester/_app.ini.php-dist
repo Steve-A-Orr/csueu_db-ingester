@@ -1,0 +1,22 @@
+;<?php die();
+;/* This is config file for simple CSUEU Ingest app and should 
+;   not be called directly nor displayed as PHP.
+;
+;   IMPORTANT : Make sure to rename this file to _app.ini.php
+;
+[common]
+appdir          = "folder_where_files_located"
+mailaddress     = "emailaddress"
+
+[dev]
+apphost      = "localhost"
+externalhost = "hostname"
+mysqliusr    = "mysqli_username"
+mysqlipwd    = "mysqli_password"
+mysqlihst    = "mysqli_hostname"
+mysqliprt    = "mysqli_port"
+mysqlidbs    = "mysqli_database"
+parentdir       = "folder_containing_assetsdir_and_appdir"
+
+;*/
+;?>
